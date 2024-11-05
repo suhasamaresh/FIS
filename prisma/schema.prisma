@@ -1,0 +1,394 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model FacultyPersonalDetails {
+  id                         Int      @id @default(autoincrement())
+  facultyId                  Int      @unique
+  qualification              String
+  photo                      String?
+  title                      String
+  firstName                  String
+  middleName                 String?
+  lastName                   String
+  emailId                    String   @unique
+  contactNo                  String
+  alternateContactNo         String?
+  emergencyContactNo         String?
+  adharNo                    String   @unique
+  panNo                      String?
+  dob                        DateTime
+  gender                     String
+  nationality                String
+  firstAddressLine1          String
+  firstAddressLine2          String?
+  firstAddressLine3          String?
+  correspondenceAddressLine1 String
+  correspondenceAddressLine2 String?
+  correspondenceAddressLine3 String?
+  religion                   String?
+  caste                      String?
+  category                   String?
+  motherTongue               String
+  speciallyChallenged        Boolean
+  remarks                    String?
+  languages                  Json
+}
+
+model FacultyFinancialData {
+  id            Int     @id @default(autoincrement())
+  facultyId     Int     @unique
+  bankName      String
+  accountNo     String  @unique
+  accountName   String
+  accountType   String
+  branch        String
+  ifsc          String
+  pfNumber      String?
+  uanNumber     String?
+  pensionNumber String?
+}
+
+model FacultyEducation {
+  id                  Int    @id @default(autoincrement())
+  facultyId           Int    @unique
+  classProgram        String
+  usnSsn              String
+  schoolCollege       String
+  specialization      String
+  mediumOfInstruction String
+  directCorr          String
+  passClass           String
+}
+
+model FacultyDependants {
+  id         Int     @id @default(autoincrement())
+  facultyId  Int
+  motherName String?
+  fatherName String?
+  spouseName String?
+  children   Json
+}
+
+model User {
+  id        Int    @id @default(autoincrement())
+  user      String
+  facultyId Int  
+  password  String @unique
+}
+
+model FacultyAcademicDetails {
+  id                     String   @id @default(uuid())
+  employeeId             String   @unique
+  qualification          String
+  aicteFacultyId         String?  @unique
+  department             String
+  level                  String
+  designation            String
+
+  previousExperience     PreviousTeachingExperience[]
+  drAitExperience        DrAitExperience?
+  industryExperience     IndustryExperience[]
+  researchExperience     ResearchExperience[]
+  specializations        Specialization[]
+  eventsAttended         EventAttended[]
+  invitedTalks           InvitedTalk[]
+  publications           Publication[]
+  responsibilities       Responsibility[]
+  extracurriculars       Extracurricular[]
+  outreachActivities     OutreachActivity[]
+  recognitions           Recognition[]
+  awards                 Award[]
+}
+
+model PreviousTeachingExperience {
+  id           String   @id @default(uuid())
+  instituteName String
+  fromDate      DateTime
+  toDate        DateTime
+  faculty       FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId     String
+}
+
+model DrAitExperience {
+  id                    String   @id @default(uuid())
+  dateOfJoining         DateTime
+  designationOnJoining  String
+  faculty               FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId             String   @unique
+}
+
+model IndustryExperience {
+  id            String   @id @default(uuid())
+  organization  String
+  designation   String
+  fromDate      DateTime
+  toDate        DateTime
+  faculty       FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId     String
+}
+
+model ResearchExperience {
+  id            String   @id @default(uuid())
+  organization  String
+  designation   String
+  fromDate      DateTime
+  toDate        DateTime
+  faculty       FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId     String
+}
+
+model Specialization {
+  id            String   @id @default(uuid())
+  subjectsTaught String
+  program       String
+  numberOfTimes Int
+  faculty       FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId     String
+}
+
+model EventAttended {
+  id             String   @id @default(uuid())
+  eventType      String
+  title          String
+  fromDate       DateTime
+  toDate         DateTime
+  organizer      String
+  venue          String
+  sponsor        String?
+  targetAudience String?
+  faculty        FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId      String
+}
+
+model InvitedTalk {
+  id             String   @id @default(uuid())
+  eventType      String
+  title          String
+  fromDate       DateTime
+  toDate         DateTime
+  organizer      String
+  venue          String
+  targetAudience String
+  faculty        FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId      String
+}
+
+model Publication {
+  id                String   @id @default(uuid())
+  publicationType   String
+  name              String
+  volume            String?
+  pageNumber        String?
+  doi               String?
+  impactFactor      Float?
+  faculty           FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId         String
+}
+
+model Responsibility {
+  id                      String   @id @default(uuid())
+  additionalResponsibility String
+  fromDate                DateTime
+  toDate                  DateTime
+  faculty                 FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId               String
+}
+
+model Extracurricular {
+  id            String   @id @default(uuid())
+  eventType     String
+  eventTitle    String
+  fromDate      DateTime
+  toDate        DateTime
+  organizer     String
+  level         String
+  achievement   String
+  faculty       FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId     String
+}
+
+model OutreachActivity {
+  id        String   @id @default(uuid())
+  activity  String
+  role      String
+  fromDate  DateTime
+  toDate    DateTime
+  place     String
+  faculty   FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId String
+}
+
+model Recognition {
+  id                  String   @id @default(uuid())
+  recognitionReceived String
+  faculty             FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId           String
+}
+
+model Award {
+  id            String   @id @default(uuid())
+  awardReceived String
+  faculty       FacultyAcademicDetails  @relation(fields: [facultyId], references: [id])
+  facultyId     String
+}
+
+model FacultyResearchDetails {
+  id                    String   @id @default(uuid())
+  facultyVTUId          String   @unique
+  facultyAICTEId        String?  @unique
+  orcidId               String?  @unique
+  googleScholarId       String?  @unique
+  scopusId              String?  @unique
+  publonsId             String?  @unique
+
+  nationalJournals      NationalJournal[]
+  internationalJournals InternationalJournal[]
+  nationalConferences   NationalConference[]
+  internationalConferences InternationalConference[]
+  researchGrants        ResearchGrant[]
+  consultancies         Consultancy[]
+  patents               Patent[]
+  researchSupervisions  ResearchSupervision[]
+}
+
+model NationalJournal {
+  id                  String   @id @default(uuid())
+  title               String
+  journalName         String
+  issueNo             String?
+  volume              String?
+  yearOfPublication   Int
+  pageNo              String?
+  author1             String
+  author2             String?
+  author3             String?
+  author4             String?
+  publishedUnder      String?
+  impactFactor        Float?
+  quartile            String?
+  facultyResearch     FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId   String
+}
+
+model InternationalJournal {
+  id                  String   @id @default(uuid())
+  title               String
+  journalName         String
+  issueNo             String?
+  volume              String?
+  yearOfPublication   Int
+  pageNo              String?
+  author1             String
+  author2             String?
+  author3             String?
+  author4             String?
+  publishedUnder      String?
+  impactFactor        Float?
+  quartile            String?
+  facultyResearch     FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId   String
+}
+
+model NationalConference {
+  id                  String   @id @default(uuid())
+  title               String
+  journalName         String
+  issueNo             String?
+  volume              String?
+  yearOfPublication   Int
+  pageNo              String?
+  author1             String
+  author2             String?
+  author3             String?
+  author4             String?
+  publishedUnder      String?
+  sponsor             String?
+  venue               String
+  fromDate            DateTime
+  toDate              DateTime
+  facultyResearch     FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId   String
+}
+
+model InternationalConference {
+  id                  String   @id @default(uuid())
+  title               String
+  journalName         String
+  issueNo             String?
+  volume              String?
+  yearOfPublication   Int
+  pageNo              String?
+  author1             String
+  author2             String?
+  author3             String?
+  author4             String?
+  publishedUnder      String?  // e.g., WEB OF SCIENCE, SCOPUS
+  sponsor             String?
+  venue               String
+  fromDate            DateTime
+  toDate              DateTime
+  facultyResearch     FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId   String
+}
+
+model ResearchGrant {
+  id                     String   @id @default(uuid())
+  title                  String
+  sanctionedDate         DateTime
+  projectPeriod          String
+  amountSanctioned       Float
+  fundedBy               String
+  principalInvestigator  String
+  coPrincipalInvestigator String?
+  phdAwarded             Boolean
+  status                 String
+  facultyResearch        FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId      String
+}
+
+model Consultancy {
+  id                     String   @id @default(uuid())
+  sanctionedDate         DateTime
+  projectPeriod          String
+  amountSanctioned       Float
+  fundedBy               String
+  principalInvestigator  String
+  coPrincipalInvestigator String?
+  status                 String
+  facultyResearch        FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId      String
+}
+
+model Patent {
+  id                String   @id @default(uuid())
+  title             String
+  areaOfResearch    String
+  patentPeriod      String
+  grantedYear       Int
+  author1           String // Name and designation
+  author2           String?
+  author3           String?
+  author4           String?
+  facultyResearch   FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId String
+}
+
+model ResearchSupervision {
+  id                    String   @id @default(uuid())
+  researchScholarName   String
+  universitySeatNumber  String
+  areaOfResearch        String
+  registrationDate      DateTime
+  university            String
+  researcherDesignation String
+  instituteName         String
+  progress              String
+  facultyResearch       FacultyResearchDetails @relation(fields: [facultyResearchId], references: [id])
+  facultyResearchId     String
+}
