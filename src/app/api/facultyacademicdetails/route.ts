@@ -1,81 +1,85 @@
-import prisma from "@/app/lib/db";
-import { NextResponse } from "next/server";
+import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
+const prisma = new PrismaClient();
+
+// POST: Create a new Faculty Academic Detail
+export async function POST(req: { json: () => PromiseLike<{ employeeId: any; qualification: any; aicteFacultyId: any; department: any; level: any; designation: any; previousExperience: any; drAitExperience: any; industryExperience: any; researchExperience: any; specializations: any; eventsAttended: any; invitedTalks: any; publications: any; responsibilities: any; extracurriculars: any; outreachActivities: any; recognitions: any; awards: any; }> | { employeeId: any; qualification: any; aicteFacultyId: any; department: any; level: any; designation: any; previousExperience: any; drAitExperience: any; industryExperience: any; researchExperience: any; specializations: any; eventsAttended: any; invitedTalks: any; publications: any; responsibilities: any; extracurriculars: any; outreachActivities: any; recognitions: any; awards: any; }; }) {
+  const {
+    employeeId,
+    qualification,
+    aicteFacultyId,
+    department,
+    level,
+    designation,
+    previousExperience,
+    drAitExperience,
+    industryExperience,
+    researchExperience,
+    specializations,
+    eventsAttended,
+    invitedTalks,
+    publications,
+    responsibilities,
+    extracurriculars,
+    outreachActivities,
+    recognitions,
+    awards,
+  } = await req.json();
+
   try {
-    // Parse the JSON data from the request body
-    const {
-      facultyVTUId,
-      facultyAICTEId,
-      orcidId,
-      googleScholarId,
-      scopusId,
-      publonsId,
-      nationalJournals,
-      internationalJournals,
-      nationalConferences,
-      internationalConferences,
-      researchGrants,
-      consultancies,
-      patents,
-      researchSupervisions,
-    } = await req.json();
-
-    // Create a new research details record for faculty in the FacultyResearchDetails table
-    const newResearchDetail = await prisma.facultyResearchDetails.create({
+    const newResearchDetail = await prisma.facultyAcademicDetails.create({
       data: {
-        facultyVTUId,
-        facultyAICTEId,
-        orcidId,
-        googleScholarId,
-        scopusId,
-        publonsId,
-
-        // Relations - creating arrays for each category
-        nationalJournals: {
-          create: nationalJournals ?? []
+        employeeId: employeeId,
+        aicteFacultyId: aicteFacultyId,
+        qualification: qualification,
+        department: department,
+        level: level,
+        designation: designation,
+        previousExperience: {
+          create: previousExperience,
         },
-        internationalJournals: {
-          create: internationalJournals ?? []
+        drAitExperience: {
+          create: drAitExperience,
         },
-        nationalConferences: {
-          create: nationalConferences ?? []
+        industryExperience: {
+          create: industryExperience,
         },
-        internationalConferences: {
-          create: internationalConferences ?? []
+        researchExperience: {
+          create: researchExperience,
         },
-        researchGrants: {
-          create: researchGrants ?? []
+        specializations: {
+          create: specializations,
         },
-        consultancies: {
-          create: consultancies ?? []
+        eventsAttended: {
+          create: eventsAttended,
         },
-        patents: {
-          create: patents ?? []
+        invitedTalks: {
+          create: invitedTalks,
         },
-        researchSupervisions: {
-          create: researchSupervisions ?? []
+        publications: {
+          create: publications,
+        },
+        responsibilities: {
+          create: responsibilities,
+        },
+        extracurriculars: {
+          create: extracurriculars,
+        },
+        outreachActivities: {
+          create: outreachActivities,
+        },
+        recognitions: {
+          create: recognitions,
+        },
+        awards: {
+          create: awards,
         },
       },
     });
 
-    // Return a success response with the new record
-    return NextResponse.json({ success: true, data: newResearchDetail });
+    return NextResponse.json(newResearchDetail, { status: 201 });
   } catch (error) {
-    console.error("Error creating faculty research details:", error);
-    return NextResponse.json({ success: false, error: "Failed to create faculty research details" }, { status: 500 });
-  }
-}
-
-export async function GET(req: Request) {
-  try {
-    // Fetch all faculty research details records
-    const facultyResearchDetails = await prisma.facultyResearchDetails.findMany();
-
-    // Return a success response with the records
-    return NextResponse.json({ success: true, data: facultyResearchDetails });
-  } catch (error) {
-    console.error("Error fetching faculty research details:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch faculty research details" }, { status: 500 });
+    return new Response(JSON.stringify({ error: 'Unable to retrieve Faculty Academic Details' }), { status: 500 });
   }
 }
